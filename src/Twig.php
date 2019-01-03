@@ -49,13 +49,12 @@ class Twig implements \ArrayAccess
     /**
      * Create new Twig view
      *
-     * @param string|array $path     Path(s) to templates directory
+     * @param $loader     Twig template loader
      * @param array        $settings Twig environment settings
      */
-    public function __construct($path, $settings = [])
+    public function __construct($loader, $settings = [])
     {
-        $this->loader = $this->createLoader(is_string($path) ? [$path] : $path);
-        $this->environment = new \Twig_Environment($this->loader, $settings);
+        $this->environment = new \Twig_Environment($loader, $settings);
     }
 
     /********************************************************************************
@@ -140,7 +139,7 @@ class Twig implements \ArrayAccess
      * @param array $paths
      * @return \Twig_Loader_Filesystem
      */
-    private function createLoader(array $paths)
+    public function createFilesystemLoader(array $paths)
     {
         $loader = new \Twig_Loader_Filesystem();
 
@@ -153,6 +152,18 @@ class Twig implements \ArrayAccess
         }
 
         return $loader;
+    }
+
+    /**
+     * Create a loader with Twig_Loader_Array
+     *
+     * @param array $templates
+     * @return \Twig_Loader_Array
+     */
+    public function createArrayLoader(array $templates)
+    {
+      $loader = new \Twig_Loader_Array($templates);
+      return $loader;
     }
 
     /********************************************************************************
