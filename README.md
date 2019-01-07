@@ -6,6 +6,9 @@ This is a Slim Framework view helper built on top of the Twig templating compone
 
 Requires Slim Framework 3 and PHP 5.5.0 or newer.
 
+-----
+This version has been modified to be instantiated with a Twig_Loader_Array instead of an array of filepaths.
+
 ## Usage
 
 ```php
@@ -15,9 +18,12 @@ $app = new \Slim\App();
 // Fetch DI Container
 $container = $app->getContainer();
 
+// Set loader
+$loader = new \Twig_Loader_Chain(array("path/to/templates", $someOtherLoader))
+
 // Register Twig View helper
 $container['view'] = function ($c) {
-    $view = new \Slim\Views\Twig('path/to/templates', [
+    $view = new \Slim\Views\Twig($loader, [
         'cache' => 'path/to/cache'
     ]);
     
