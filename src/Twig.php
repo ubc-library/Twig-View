@@ -24,14 +24,14 @@ class Twig implements \ArrayAccess
     /**
      * Twig loader
      *
-     * @var \Twig_LoaderInterface
+     * @var \Twig\Loader\LoaderInterface
      */
     protected $loader;
 
     /**
      * Twig environment
      *
-     * @var \Twig_Environment
+     * @var \Twig\Environment
      */
     protected $environment;
 
@@ -55,6 +55,7 @@ class Twig implements \ArrayAccess
     public function __construct($loader, $settings = [])
     {
         $this->environment = new \Twig_Environment($loader, $settings);
+        $this->loader = $loader;
     }
 
     /********************************************************************************
@@ -64,9 +65,9 @@ class Twig implements \ArrayAccess
     /**
      * Proxy method to add an extension to the Twig environment
      *
-     * @param \Twig_ExtensionInterface $extension A single extension instance or an array of instances
+     * @param \Twig\Extension\ExtensionInterface $extension A single extension instance or an array of instances
      */
-    public function addExtension(\Twig_ExtensionInterface $extension)
+    public function addExtension(\Twig\Extension\ExtensionInterface $extension)
     {
         $this->environment->addExtension($extension);
     }
@@ -77,6 +78,10 @@ class Twig implements \ArrayAccess
      *
      * @param  string $template Template pathname relative to templates directory
      * @param  array  $data     Associative array of template variables
+     *
+     * @throws \Twig\Error\LoaderError  When the template cannot be found
+     * @throws \Twig_Error\SyntaxError  When an error occurred during compilation
+     * @throws \Twig_Error\RuntimeError When an error occurred during rendering
      *
      * @return string
      */
@@ -100,7 +105,7 @@ class Twig implements \ArrayAccess
     {
         $data = array_merge($this->defaultVariables, $data);
 
-        return $this->environment->loadTemplate($template)->renderBlock($block, $data);
+        return $this->environment->load($template)->renderBlock($block, $data);
     }
 
     /**
@@ -137,11 +142,11 @@ class Twig implements \ArrayAccess
      * Create a loader with the given path
      *
      * @param array $paths
-     * @return \Twig_Loader_Filesystem
+     * @return \Twig\Loader\FilesystemLoader
      */
     public function createFilesystemLoader(array $paths)
     {
-        $loader = new \Twig_Loader_Filesystem();
+        $loader = new \Twig\Loader\FilesystemLoader();
 
         foreach ($paths as $namespace => $path) {
             if (is_string($namespace)) {
@@ -173,7 +178,7 @@ class Twig implements \ArrayAccess
     /**
      * Return Twig loader
      *
-     * @return \Twig_LoaderInterface
+     * @return \Twig\Loader\LoaderInterface
      */
     public function getLoader()
     {
@@ -183,7 +188,7 @@ class Twig implements \ArrayAccess
     /**
      * Return Twig environment
      *
-     * @return \Twig_Environment
+     * @return \Twig\Environment
      */
     public function getEnvironment()
     {
