@@ -54,7 +54,7 @@ class Twig implements \ArrayAccess
      */
     public function __construct($loader, $settings = [])
     {
-        $this->environment = new \Twig_Environment($loader, $settings);
+        $this->environment = new \Twig\Environment($loader, $settings);
         $this->loader = $loader;
     }
 
